@@ -5,12 +5,12 @@ body{
     align-items: center;
     justify-content: center; 
     height: 90vh;
+    padding-left: 0.5rem;
     /* width: 0vw; */
 }
 
-h1{
-    /* font-size: xx-large; */
-
+.container{
+    
 }
 
 canvas{
