@@ -11,8 +11,8 @@ if (canvas == null || next_button == null || play_button == null || pause_button
     throw new Error("Could Not Get Elements");
 }
 let intervalId = null;
-canvas.width = small ? 300 : 600;
-canvas.height = small ? 300 : 600;
+canvas.width = small ? 400 : 600;
+canvas.height = small ? 400 : 600;
 const CELL_WIDTH = canvas.width / BOARD_COLS;
 const CELL_HEIGHT = canvas.height / BOARD_ROWS;
 function generateBoard() {
