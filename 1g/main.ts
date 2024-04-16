@@ -1,6 +1,6 @@
-
-const BOARD_ROWS = 32;
-const BOARD_COLS = 32;
+const small = document.documentElement.clientWidth < 800; 
+const BOARD_ROWS = small?18:32;
+const BOARD_COLS = small?18:32;
 const canvas:HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
 const next_button:HTMLButtonElement = document.getElementById("next") as HTMLButtonElement;
 
@@ -21,8 +21,8 @@ if(canvas==null || next_button == null || play_button == null || pause_button ==
 
 let intervalId:any = null;
 
-canvas.width = 600;
-canvas.height = 600;
+canvas.width = small?300:600;
+canvas.height = small?300:600;
 const CELL_WIDTH = canvas.width / BOARD_COLS;
 const CELL_HEIGHT = canvas.height / BOARD_ROWS;
 

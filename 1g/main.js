@@ -1,6 +1,7 @@
 "use strict";
-const BOARD_ROWS = 32;
-const BOARD_COLS = 32;
+const small = document.documentElement.clientWidth < 800;
+const BOARD_ROWS = small ? 18 : 32;
+const BOARD_COLS = small ? 18 : 32;
 const canvas = document.getElementById("canvas");
 const next_button = document.getElementById("next");
 const play_button = document.getElementById("play");
@@ -10,8 +11,8 @@ if (canvas == null || next_button == null || play_button == null || pause_button
     throw new Error("Could Not Get Elements");
 }
 let intervalId = null;
-canvas.width = 600;
-canvas.height = 600;
+canvas.width = small ? 300 : 600;
+canvas.height = small ? 300 : 600;
 const CELL_WIDTH = canvas.width / BOARD_COLS;
 const CELL_HEIGHT = canvas.height / BOARD_ROWS;
 function generateBoard() {
