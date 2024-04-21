@@ -15,6 +15,7 @@ canvas.width = small ? 360 : 600;
 canvas.height = small ? 360 : 600;
 const CELL_WIDTH = canvas.width / BOARD_COLS;
 const CELL_HEIGHT = canvas.height / BOARD_ROWS;
+let GRID = '2D';
 function generateBoard() {
     const BOARD = [];
     for (let r = 0; r < BOARD_ROWS; r++) {
@@ -24,9 +25,11 @@ function generateBoard() {
 }
 let BOARD = generateBoard();
 let nextBOARD = generateBoard();
+let nextLINE = new Array(BOARD_COLS).fill('dead');
 function aliveNeighboursCount(current, r, c) {
     let count = 0;
     // let temp:State[] = [];
+    // if(grid=='2D'){
     for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
             if (dr != 0 || dc != 0) {
@@ -58,10 +61,27 @@ function aliveNeighboursCount(current, r, c) {
             }
         }
     }
+    // }
+    // else{
+    //     let lc = c -1;
+    //     let rc = c + 1 ;
+    //     if (lc<0) lc = BOARD_COLS -1;
+    //     if (rc >= BOARD_COLS) rc = 0 ;
+    //     let left = current[BOARD_ROWS -1 ][lc]=='alive'?1:0
+    //     let right = current[BOARD_ROWS -1][rc]=='alive'?1:0
+    //     count += left + right;
+    // }
     // count = temp.reduce((acc,x)=>(x=='alive'?acc+1:acc),0)
     return count;
 }
+function dec2bin(dec) {
+    return (dec >>> 0).toString(2);
+}
+let rule = 'GOL';
+// let rule  = 89;
+// we should only use this to update and handle whether it is a 1D or 2D Grid
 function updateState(current, next, r, c, rule) {
+    // if(grid=='2D'){
     let n_count = aliveNeighboursCount(current, r, c);
     if (rule == 'GOL') {
         switch (current[r][c]) {
@@ -120,14 +140,67 @@ function updateState(current, next, r, c, rule) {
             }
         }
     }
+    // }
+    // else {
+    //     if(r==0 && c==0){
+    //         nextLINE = current[BOARD_ROWS-1]
+    //         // current.shift()
+    //         next.shift()
+    //         next.push(nextLINE)
+    //     }
+    //     if(r==0){
+    //         nextLINE = next[BOARD_ROWS-1]
+    //         let rule_string  = dec2bin(rule as number);
+    //         let left = c-1;
+    //         let right = c+1;
+    //         if(left<0) left = BOARD_COLS -1;
+    //         if(right>=BOARD_COLS) right = 0;
+    //         let index = 0;
+    //         // console.log([left,c,right])
+    //         console.log(nextLINE[left],nextLINE[c],nextLINE[right])
+    //         if(current[BOARD_ROWS-1][left]=='alive') index = index + 4;
+    //         if(current[BOARD_ROWS-1][c]=='alive') index = index + 2;
+    //         if(current[BOARD_ROWS-1][right]=='alive') index = index + 1;
+    //         let leng = rule_string.length
+    //         for(let i = 0; i <8-leng;i++){
+    //             rule_string  = `0${rule_string}`
+    //         }
+    //         // console.log(index);
+    //         // console.log('rule_String : ',rule_string.slice(rule_string.length-8));
+    //         // console.log(rule_string[index])
+    //         // console.log(rule_string)
+    //         if(rule_string.slice(rule_string.length-8)[index]=='1') nextLINE[c] = rule_string[index]=='1'?'alive':'dead';
+    //         next[BOARD_ROWS-1] = nextLINE;
+    //         console.log(nextLINE)
+    //     }
+    // }
 }
 function computeNextBoard(current, next) {
     for (let r = 0; r < BOARD_ROWS; r++) {
         for (let c = 0; c < BOARD_COLS; c++) {
             // this is where the rules for the cellular automata are
-            updateState(current, next, r, c, 'GOL');
+            updateState(current, next, r, c, rule);
         }
     }
+}
+function computeNextLine(current, next, rule) {
+    let currentLine = [...current[BOARD_ROWS - 1]];
+    let nextLine = [...next[BOARD_ROWS - 1]];
+    next.shift();
+    for (let c = 0; c < BOARD_COLS; c++) {
+        let lc = c == 0 ? BOARD_COLS - 1 : c - 1;
+        let rc = c == BOARD_COLS - 1 ? 0 : c + 1;
+        console.log([lc, c, rc]);
+        let index = (currentLine[lc] == 'alive' ? 4 : 0) + currentLine[c] == 'alive' ? 2 : 0 + currentLine[rc] == 'alive' ? 1 : 0;
+        let rule_string = dec2bin(rule);
+        let leng = rule_string.length;
+        for (let i = 0; i < 8 - leng; i++) {
+            rule_string = `0${rule_string}`;
+        }
+        console.log(nextLine);
+        nextLine[c] = rule_string[index] == '1' ? 'alive' : 'dead';
+    }
+    next.push(nextLine);
 }
 // for (let r = 0;r<BOARD_ROWS;r++){
 //     let row:State[] = []
@@ -164,16 +237,35 @@ function setManually(e, ctx) {
     else {
         BOARD[row][col] = 'dead';
     }
-    // console.log([col,row])
     render(ctx);
 }
-canvas.addEventListener('click', (e) => {
+function handleRuleChange(new_rule) {
+    rule = new_rule;
+    clearInterval(intervalId);
+    intervalId = null;
+}
+let drawing = false;
+canvas.addEventListener('mousedown', (e) => {
+    drawing = true;
     setManually(e, ctx);
     clearInterval(intervalId);
     intervalId = null;
 });
+canvas.addEventListener('mouseup', (e) => {
+    drawing = false;
+});
+canvas.addEventListener('mousemove', (e) => {
+    if (drawing) {
+        setManually(e, ctx);
+    }
+});
 function transition(ctx) {
-    computeNextBoard(BOARD, nextBOARD);
+    if (GRID == '2D') {
+        computeNextBoard(BOARD, nextBOARD);
+    }
+    else {
+        computeNextLine(BOARD, nextBOARD, 30);
+    }
     [BOARD, nextBOARD] = [nextBOARD, BOARD];
     render(ctx);
 }

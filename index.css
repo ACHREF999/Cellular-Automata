@@ -10,7 +10,7 @@ body{
 }
 
 .container{
-    
+
 }
 
 canvas{
@@ -32,4 +32,9 @@ button{
     border-radius: 8px;
     font-weight: 700;
     font-size: large;
+}
+
+.Rules { 
+    color: black ;
+    margin-bottom: 1.2rem;
 }

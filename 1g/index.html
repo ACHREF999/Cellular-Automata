@@ -10,6 +10,40 @@
     <div class="container">
         <div class="Header">
             <h1>2D Grid Cellular Automatas</h1>
+            <div class="Rules">
+                <form>
+  <fieldset>
+    <legend>Choose a Cellular Automata Rule  : </legend>
+    <div>
+      <input
+        type="radio"
+        id="contactChoice1"
+        name="contact"
+        value="email"
+        onchange="handleRuleChange('GOL')"
+        checked />
+        <label for="contactChoice1">Game Of Life</label>
+
+        <input
+            type="radio"
+            id="contactChoice2"
+            name="contact"
+            value="telephone" 
+            onchange="handleRuleChange('SEEDS')"
+/>
+        <label for="contactChoice2">Seeds</label>
+
+        <input type="radio" id="contactChoice3" name="contact" value="courrier"  onchange="handleRuleChange('DAY_NIGHT')"
+        />
+        <label for="contactChoice3">Day & Night</label>
+        </div>
+        <div>
+        <!-- <button type="submit">Envoyer</button> -->
+        </div>
+    </fieldset>
+    </form>
+
+            </div>
             <div>
                 <button id="next">Next</button>
                 <button id="play">Play</button>

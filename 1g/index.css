@@ -33,3 +33,8 @@ button{
     font-weight: 700;
     font-size: large;
 }
+
+.Rules { 
+    color: black ;
+    margin-bottom: 1.2rem;
+}
