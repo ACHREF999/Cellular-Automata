@@ -83,6 +83,7 @@ let rule = 'GOL';
 function updateState(current, next, r, c, rule) {
     // if(grid=='2D'){
     let n_count = aliveNeighboursCount(current, r, c);
+    // should have use a switch case here but im lazy
     if (rule == 'GOL') {
         switch (current[r][c]) {
             case "alive": {
@@ -137,6 +138,54 @@ function updateState(current, next, r, c, rule) {
                     next[r][c] = 'dead';
                 }
                 break;
+            }
+        }
+    }
+    else if (rule == 'FRACTAL_SQUARE') {
+        if (current[r][c] == 'alive') {
+            if ([5, 6].includes(aliveNeighboursCount(current, r, c))) {
+                // overpopulation
+                nextBOARD[r][c] = 'dead';
+            }
+            else {
+                nextBOARD[r][c] = 'alive';
+            }
+        }
+        else {
+            // refactor all of these to use the mod operator '%' with a padding for negative values using BOARD_COLS/BOARD_ROWS
+            let top = r - 1;
+            let bottom = r + 1;
+            let left = c - 1;
+            let right = c + 1;
+            if (top < 0)
+                top = BOARD_ROWS - 1;
+            // if(top>=BOARD_ROWS) top = 0;
+            if (bottom >= BOARD_ROWS)
+                bottom = 0;
+            // if(top<0) top = BOARD_ROWS-1;
+            if (left < 0)
+                left = BOARD_COLS - 1;
+            if (right >= BOARD_COLS)
+                right = 0;
+            if (current[r][left] == 'alive') {
+                if (aliveNeighboursCount(current, r, left) < 4) {
+                    nextBOARD[r][c] = 'alive';
+                }
+            }
+            if (current[r][right] == 'alive') {
+                if (aliveNeighboursCount(current, r, right) < 4) {
+                    nextBOARD[r][c] = 'alive';
+                }
+            }
+            if (current[top][c] == 'alive') {
+                if (aliveNeighboursCount(current, top, c) < 3) {
+                    nextBOARD[r][c] = 'alive';
+                }
+            }
+            if (current[bottom][c] == 'alive') {
+                if (aliveNeighboursCount(current, bottom, c) < 3) {
+                    nextBOARD[r][c] = 'alive';
+                }
             }
         }
     }
